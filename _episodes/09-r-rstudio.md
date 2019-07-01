@@ -1,7 +1,7 @@
 ---
 title: "RStudio deployment for fun and profit"
 teaching: 0
-exercises: 20
+exercises: 30
 questions:
 objectives:
 - Run an R workflow through both the terminal and RStudio using containers
