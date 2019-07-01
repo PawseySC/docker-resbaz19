@@ -13,7 +13,7 @@ keypoints:
 
 ### Directory and file defaults in Docker ###
 
-Try and run the following to get to know what is the starting point in the Ubuntu container and what it contains:
+Try and run the following to get to know what is the starting point in the Ubuntu container and what it contains. First: 
 
 ```
 $ docker run ubuntu pwd
@@ -24,6 +24,8 @@ $ docker run ubuntu pwd
 /
 ```
 {: .output}
+
+Then:
 
 ```
 docker run ubuntu ls -l
@@ -116,7 +118,10 @@ $ ls -l container1
 
 The file created in the container is actually available from the host, as a consequence of volume mapping.
 
-Finally, Docker has a flag to change working directory in the container, to avoid using full paths, `-w` or `--workdir`; for instance let us use it to change dir to the mapped host directory:
+
+### Changing working directory at runtime
+
+Docker has a flag to change working directory in the container, `-w` or `--workdir`. For instance let us use it to change dir to the mapped host directory, which allows us to use relative rather than full paths:
 
 ```
 $ docker run -v `pwd`:/data -w /data ubuntu touch container2
@@ -143,55 +148,6 @@ Docker has several ways to mount data into containers. Here we've only partially
 3. **tmpfs mounts**: store data temporarily in the host memory.
 
 [Manage data in Docker](https://docs.docker.com/storage/) contains detailed information on these options.
-
-
-> ## Run a Python app in a container with I/O ##
-> 
-> With your favourite text editor create a file called `app.py` with the following content:
-> 
-> ```
-> import sys
->   
-> def print_sums(data):
->     with open("row_sums",'w') as output:
->         for line in data:
->             row = 0
->             for word in line.strip().split():
->                 row += int(word)
->             output.write(str(row)+"\n")
->             print("Sum of the row is ",row)
-> 
-> if len(sys.argv) > 1 and sys.argv[1] != "-":
->     with open(sys.argv[1], 'r') as infile:
->         print_sums(infile)
-> else:
->     print_sums(sys.stdin)
-> ```
-> {: .python}
-> 
-> and an input file `input` containing:
-> 
-> ```
-> 1 2 3
-> 4 5 6
-> 7 8 9
-> ```
-> {: .source}
-> 
-> The app reads rows containing integers and outputs their sums line by line. Input can be given through file or via standard input. The output is produced both in formatted form through standard output and in raw form written to a file named `row_sums`.
-> 
-> Now, run `python app.py` using the the container image `continuumio/miniconda3:4.5.12` you previously pulled. Give the input filename as an argument to the app.
-> 
-> > ## Solution ##
-> > 
-> > Run with input file as argument:
-> > 
-> > ```
-> > $ docker run -v `pwd`:/data -w /data continuumio/miniconda3:4.5.12 python app.py input
-> > ```
-> > {: .bash}
-> {: .solution}
-{: .challenge}
 
 
 > ## Running BLAST from a container with Docker ##
@@ -311,6 +267,55 @@ Docker has several ways to mount data into containers. Here we've only partially
 > {: .output}
 > 
 > We can see that several proteins in the zebrafish genome match those in the human prion (interesting?).
+{: .challenge}
+
+
+> ## Run a Python app in a container with I/O ##
+> 
+> With your favourite text editor create a file called `app.py` with the following content:
+> 
+> ```
+> import sys
+>   
+> def print_sums(data):
+>     with open("row_sums",'w') as output:
+>         for line in data:
+>             row = 0
+>             for word in line.strip().split():
+>                 row += int(word)
+>             output.write(str(row)+"\n")
+>             print("Sum of the row is ",row)
+> 
+> if len(sys.argv) > 1 and sys.argv[1] != "-":
+>     with open(sys.argv[1], 'r') as infile:
+>         print_sums(infile)
+> else:
+>     print_sums(sys.stdin)
+> ```
+> {: .python}
+> 
+> and an input file `input` containing:
+> 
+> ```
+> 1 2 3
+> 4 5 6
+> 7 8 9
+> ```
+> {: .source}
+> 
+> The app reads rows containing integers and outputs their sums line by line. Input can be given through file or via standard input. The output is produced both in formatted form through standard output and in raw form written to a file named `row_sums`.
+> 
+> Now, run `python app.py` using the the container image `continuumio/miniconda3:4.5.12` you previously pulled. Give the input filename as an argument to the app.
+> 
+> > ## Solution ##
+> > 
+> > Run with input file as argument:
+> > 
+> > ```
+> > $ docker run -v `pwd`:/data -w /data continuumio/miniconda3:4.5.12 python app.py input
+> > ```
+> > {: .bash}
+> {: .solution}
 {: .challenge}
 
 

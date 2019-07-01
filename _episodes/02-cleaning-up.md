@@ -225,7 +225,7 @@ Error response from daemon: conflict: unable to remove repository reference "ngi
 > > {: .output}
 > {: .solution}
 > 
-> Let us NOT remove the `miniconda3` image, we'll need it later.
+> Let us NOT remove the `miniconda3` image for now.
 {: .challenge}
 
 
