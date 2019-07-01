@@ -1,7 +1,7 @@
 ---
 title: "Cleaning up Docker"
-teaching: 8
-exercises: 2
+teaching: 10
+exercises: 5
 questions:
 objectives:
 - Learn how to remove containers and images from your machine when you no longer need them
