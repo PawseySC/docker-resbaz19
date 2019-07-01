@@ -292,13 +292,8 @@ nginx
 > > {: .output}
 > {: .solution}
 > 
-> Copy the token, in this example `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuv`, in the clipboard. 
+> Copy the token, in this example `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuv`, in the clipboard. Then use your web browser to go to `localhost` if you are running Docker on your machine, or `<Your VMs IP Address>` if you are running on a cloud service. Paste the token to access your containerised Jupyter server!
 > 
-> Then use your web browser to go to `localhost` if you are running Docker on your machine, or `<Your VMs IP Address>` if you are running on a cloud service. 
-> 
-> Paste the token to access your containerised Jupyter server!
-
-
 > Once you are done, close the browser window, then stop the container.
 > 
 > > ## Solution ##
