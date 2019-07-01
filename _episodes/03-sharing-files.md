@@ -121,7 +121,7 @@ The file created in the container is actually available from the host, as a cons
 
 ### Changing working directory at runtime
 
-Docker has a flag to change working directory in the container, `-w` or `--workdir`. For instance let us use it to change dir to the mapped host directory, which allows us to use relative rather than full paths:
+Docker has a flag to change working directory in the container, `-w` or `--workdir`. For instance let us use it to change dir to the mapped host directory, which allows us to adopt relative rather than absolute paths for files:
 
 ```
 $ docker run -v `pwd`:/data -w /data ubuntu touch container2
@@ -270,7 +270,7 @@ Docker has several ways to mount data into containers. Here we've only partially
 {: .challenge}
 
 
-> ## Run a Python app in a container with I/O ##
+> ## Optional: run a Python app in a container with I/O ##
 > 
 > With your favourite text editor create a file called `app.py` with the following content:
 > 
