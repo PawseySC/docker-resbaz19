@@ -18,7 +18,7 @@ main <- function() {
     filenames <- args[c(-1, -2)]
     stopifnot(action %in% c("--min", "--mean", "--max"))
     action <- str_remove(action, "--") # remove hyphens
-    stopifnot(str_ends(plotfile, "\\.(bmp|jpg|eps|ps|tex|pdf|jpeg|tiff|png|bmp|svg)"))
+    stopifnot(str_detect(plotfile, "\\.(bmp|jpg|eps|ps|tex|pdf|jpeg|tiff|png|bmp|svg)$"))
 
     if (length(filenames) == 0) {
         process_many(file("stdin"), action, plotfile)
