@@ -270,55 +270,6 @@ Docker has several ways to mount data into containers. Here we've only partially
 {: .challenge}
 
 
-> ## Optional: run a Python app in a container with I/O ##
-> 
-> With your favourite text editor create a file called `app.py` with the following content:
-> 
-> ```
-> import sys
->   
-> def print_sums(data):
->     with open("row_sums",'w') as output:
->         for line in data:
->             row = 0
->             for word in line.strip().split():
->                 row += int(word)
->             output.write(str(row)+"\n")
->             print("Sum of the row is ",row)
-> 
-> if len(sys.argv) > 1 and sys.argv[1] != "-":
->     with open(sys.argv[1], 'r') as infile:
->         print_sums(infile)
-> else:
->     print_sums(sys.stdin)
-> ```
-> {: .python}
-> 
-> and an input file `input` containing:
-> 
-> ```
-> 1 2 3
-> 4 5 6
-> 7 8 9
-> ```
-> {: .source}
-> 
-> The app reads rows containing integers and outputs their sums line by line. Input can be given through file or via standard input. The output is produced both in formatted form through standard output and in raw form written to a file named `row_sums`.
-> 
-> Now, run `python app.py` using the the container image `continuumio/miniconda3:4.5.12` you previously pulled. Give the input filename as an argument to the app.
-> 
-> > ## Solution ##
-> > 
-> > Run with input file as argument:
-> > 
-> > ```
-> > $ docker run -v `pwd`:/data -w /data continuumio/miniconda3:4.5.12 python app.py input
-> > ```
-> > {: .bash}
-> {: .solution}
-{: .challenge}
-
-
 ### Useful container registries ###
 
 There are a lot of applications (not just bioinformatics) already wrapped up in container images. 
