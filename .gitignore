@@ -8,3 +8,4 @@ _site
 demos/*/Rplots.pdf
 demos/*/*.png
 demos/*/.rstudio
+demos/06_rstudio_bio/data/matrix.mtx
