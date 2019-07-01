@@ -141,28 +141,83 @@ Error response from daemon: conflict: unable to remove repository reference "ngi
 
 > ## Clean up Miniconda containers from previous episode ##
 > 
-> Find and remove the stopped Miniconda containers you ran in the previous episode. Do not remove the container image, we'll use it later.
-> 
-> Hint: you can identify them as they will correspond to the image `continuumio/miniconda3:4.5.12`.
+> First, get the list of all stopped containers you have run so far.
 > 
 > > ## Solution ##
-> > 
-> > Display stopped containers: 
 > > 
 > > ```
 > > $ docker ps -a
 > > ```
 > > {: .bash}
 > > 
-> > Remove `miniconda3` stopped containers: identify their IDs from previous output, then 
+> > Sample output:
+> > 
+> > ```
+> > CONTAINER ID        IMAGE                           COMMAND                  CREATED              STATUS                          PORTS               NAMES
+> > ed6ccf413d3e        continuumio/miniconda3:4.5.12   "/usr/bin/tini -- py…"   22 seconds ago       Exited (0) 20 seconds ago                           quizzical_darwin
+> > 6f872cae5a24        continuumio/miniconda3:4.5.12   "/usr/bin/tini -- py…"   27 seconds ago       Exited (0) 26 seconds ago                           infallible_swanson
+> > 4386dd7b1e48        ubuntu                          "/bin/bash"              42 seconds ago       Exited (0) 37 seconds ago                           youthful_ardinghelli
+> > 5fbb957bd7f0        ubuntu                          "/bin/echo 'hello wo…"   50 seconds ago       Exited (0) 49 seconds ago                           mystifying_poincare
+> > f06c68c27ab2        ubuntu:17.04                    "cat /etc/os-release"    55 seconds ago       Exited (0) 54 seconds ago                           affectionate_booth
+> > b236634fcd6b        ubuntu                          "cat /etc/os-release"    About a minute ago   Exited (0) About a minute ago                       admiring_mestorf
+> > ```
+> > {: .output}
+> {: .solution}
+> 
+> Then, identify the stopped `miniconda3` containers you ran in the previous episode. You can use either IDs or NAMES. 
+> 
+> Hint: you can identify them as they will correspond to the image `continuumio/miniconda3:4.5.12`.
+> 
+> > ## Sample solution ##
+> > 
+> > IDs: `ed6ccf413d3e` and `6f872cae5a24`
+> > 
+> > Names: `quizzical_darwin` and `infallible_swanson`
+> {: .solution}
+> 
+> Finally, remove the `miniconda3` stopped containers.
+> 
+> > ## Solution ##
 > > 
 > > ```
 > > $ docker rm <list of IDs>
 > > ```
 > > {: .bash}
 > > 
-> > Do not use `docker rmi` as we don't want to remove the container image.
+> > or 
+> > 
+> > ```
+> > $ docker rm <list of Names>
+> > ```
+> > {: .bash}
+> > 
+> > In this specific example, the complete commands are:
+> > ```
+> > $ docker rm ed6ccf413d3e 6f872cae5a24
+> > ```
+> > {: .bash}
+> > 
+> > ```
+> > ed6ccf413d3e
+> > 6f872cae5a24
+> > ```
+> > {: .output}
+> > 
+> > or
+> > 
+> > ```
+> > $ docker rm quizzical_darwin infallible_swanson
+> > ```
+> > {: .bash}
+> > 
+> > ```
+> > quizzical_darwin
+> > infallible_swanson
+> > ```
+> > {: .output}
 > {: .solution}
+> 
+> Let us NOT remove the container image, we'll need it later.
 {: .challenge}
 
 

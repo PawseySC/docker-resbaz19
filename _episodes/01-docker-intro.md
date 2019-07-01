@@ -253,35 +253,59 @@ As you can see, you have root access in your container, and you are in what look
 
 > ## Pull and run a Python Miniconda container ##
 > 
-> How would you pull the following container image, `continuumio/miniconda3:4.5.12`?
-> 
-> Once you've pulled it, enquire the Python version inside the container by running `python --version`.
-> 
-> Finally, open and then close an interactive Python console through the container.
+> How would you pull the following container image: `continuumio/miniconda3:4.5.12`?
 > 
 > > ## Solution ##
-> > 
-> > Pull: 
 > > 
 > > ```
 > > $ docker pull continuumio/miniconda3:4.5.12
 > > ```
 > > {: .bash}
 > > 
-> > Get Python version:
+> > ```
+> > 4.5.12: Pulling from continuumio/miniconda3
+> > 05d1a5232b46: Already exists 
+> > d974dd5eb235: Already exists 
+> > 2de22c73730e: Pull complete 
+> > 444f639f1b28: Pull complete 
+> > c1b600cb48ba: Pull complete 
+> > Digest: sha256:e7bcbd77dd014025169f7ac698c40b7a036c97372ce80c60bb8970450a329db0
+> > Status: Downloaded newer image for continuumio/miniconda3:4.5.12
+> > ```
+> > {: .output}
+> {: .solution}
+> 
+> Now, enquire the Python version inside the container by running `python --version`.
+> 
+> > ## Solution ##
 > > 
 > > ```
 > > $ docker run continuumio/miniconda3:4.5.12 python --version
 > > ```
 > > {: .bash}
 > > 
-> > Open and close an interactive console:
+> > ```
+> > Python 3.7.1
+> > ```
+> > {: .output}
+> {: .solution}
+> 
+> Finally, open and then close an interactive Python console through the container.
+> 
+> > ## Solution ##
 > > 
 > > ```
 > > $ docker run -it continuumio/miniconda3:4.5.12 python
-> > {: .bash}
 > > ```
 > > {: .bash}
+> > 
+> > ```
+> > Python 3.7.1 (default, Dec 14 2018, 19:28:38) 
+> > [GCC 7.3.0] :: Anaconda, Inc. on linux
+> > Type "help", "copyright", "credits" or "license" for more information.
+> > >>>
+> > ``` 
+> > {: .output}
 > > 
 > > ```
 > > >>> exit   # or hit CTRL-D
