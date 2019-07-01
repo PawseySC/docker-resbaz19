@@ -198,8 +198,12 @@ Docker has several ways to mount data into containers. Here we've only partially
 
 We'll be running a BLAST (Basic Local Alignment Search Tool) example with a container from [BioContainers](https://biocontainers.pro).  BLAST is a tool bioinformaticians use to compare a sample genetic sequence to a database of known seqeuences; it's one of the most widely used bioinformatics tools.
 
+> ## Pull the BLAST container ##
+> 
 > To begin, try and pull the BLAST container `biocontainers/blast:v2.2.31_cv2` (this will take a little bit):
 > 
+> > ## Solution ##
+> > 
 > > ```
 > > $ docker pull biocontainers/blast:v2.2.31_cv2
 > > ```
