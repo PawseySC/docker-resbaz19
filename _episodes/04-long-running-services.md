@@ -73,7 +73,7 @@ Now, in order to run a web server such as a Nginx, we are going to use some addi
 * run the container in background
 * give the container a specific name
 
-We will also use a number of new Docker commands. Let's start with a known one:
+We will also use a number of new Docker commands. Let's start with a known one and add some extra flags:
 
 ```
 $ docker run -p 80:80 --name=nginx nginx
@@ -82,7 +82,7 @@ $ docker run -p 80:80 --name=nginx nginx
 
 The option `-p 80:80` tells Docker to map port `80` on the host to port `80` in the container, so you can communicate with it.
 
-We've also introduced a second new option: `--name`. Docker automatically names containers, but these names don't reflect the purpose of the container (e.g. `pensive_booth` was the name of the nginx container I ran for this example without the `--name` option).  You can name your container whatever you want, but it's helpful to give it a name similar to the container you're using, or the specific service or application you're running in the container. This can be useful when we need to act on the container while it's running, e.g. to stop it, or to get logs, as wwe'll see soon. In this example, we've called our container `nginx`. 
+We've also introduced a second new option: `--name`. Docker automatically names containers, but these names don't reflect the purpose of the container (e.g. `pensive_booth` was the name of the nginx container I ran for this example without the `--name` option).  You can name your container whatever you want, but it's helpful to give it a name similar to the container you're using, or the specific service or application you're running in the container. This can be useful when we need to act on the container while it's running, e.g. to stop it, or to get logs, as we'll see soon. In this example, we've called our container `nginx`. 
 
 Note also that we didn't tell docker what program to run, that's baked into the container in this case. More on that later.
 
@@ -99,7 +99,7 @@ Now, go to your browser and in the address bar enter `localhost` if you are runn
 
 That's a good start, but you now have a terminal tied up with nginx, and if you hit `CTRL-C` in that terminal, your web-server dies. 
 
-To practice a different solution, let's first stop this container. How to? Use the `docker stop` command!
+To practice a different solution, let's first stop this container. How to? In a new terminal, use the `docker stop` command!
 
 ```
 $ docker stop nginx
@@ -216,7 +216,28 @@ nginx
 
 > ## Start a Jupyter web server using a container ##
 > 
-> How would you use the container image `jupyter/scipy-notebook` to start a Jupyter webserver?
+> First, pull the container image `jupyter/scipy-notebook`.
+> 
+> > ## Solution ##
+> > 
+> > ```
+> > $ docker pull jupyter/scipy-notebook
+> > ```
+> > {: .bash}
+> > 
+> > ```
+> > Using default tag: latest
+> > latest: Pulling from jupyter/scipy-notebook
+> > a48c500ed24e: Already exists 
+> > [..]
+> > 5c52a47b5569: Pull complete 
+> > Digest: sha256:a2518b3a15c207dbe4997ac94c91966256ac94792b09844fbdfe53015927136f
+> > Status: Downloaded newer image for jupyter/scipy-notebook:latest
+> > ```
+> > {: .output}
+> {: .solution}
+> 
+> Now, how would you use this image to start a Jupyter webserver in daemon mode?
 > 
 > A couple of extra requirements:
 > 
@@ -225,44 +246,71 @@ nginx
 > 
 > Some hints:
 > 
-> * by default, that image wants to use port `8888` for the container
 > * use the default HTTP port `80` for the host, to navigate to the corresponding page in the web browser using default syntax
+> * this `jupyter` image wants to use port `8888` for the container
 > * no command needs to be specified for that container, the default behaviour is to start the webserver
-> 
-> After you have started it, use `docker logs` to look for an access `token` string.
-> 
-> Once you are done, stop the container.
-> 
+>
 > > ## Solution ##
-> > 
-> > Pull the container:
-> > 
-> > ```
-> > $ docker pull jupyter/scipy-notebook
-> > ```
-> > {: .bash}
-> > 
-> > Start the webserver:
 > > 
 > > ```
 > > $ docker run -d -p 80:8888 --name=jupyter -v `pwd`:/home/jovyan/data jupyter/scipy-notebook
 > > ```
 > > {: .bash}
 > > 
-> > Inspect the logs:
+> > ```
+> > a14f3c38dc24d745c470657ccdb62d77ce5a746fb37f5e02c21c978df4e156d1
+> > ```
+> > {: .output}
+> {: .solution} 
+> 
+> Use `docker logs` to look for an access `token` string.
+> 
+> > ## Solution ##
+> > 
 > > 
 > > ```
 > > $ docker logs jupyter
 > > ```
 > > {: .bash}
 > > 
-> > Use your web browser to go to `localhost` if you are running Docker on your machine, or `<Your VM's IP Address>` if you are running on a cloud service.
-> > 
-> > Stop the container:
+> > ```
+> > Executing the command: jupyter notebook
+> > [I 07:55:56.797 NotebookApp] Writing notebook server cookie secret to /home/jovyan/.local/share/jupyter/runtime/notebook_cookie_secret
+> > [I 07:55:58.101 NotebookApp] JupyterLab extension loaded from /opt/conda/lib/python3.7/site-packages/jupyterlab
+> > [I 07:55:58.101 NotebookApp] JupyterLab application directory is /opt/conda/share/jupyter/lab
+> > [I 07:55:58.103 NotebookApp] Serving notebooks from local directory: /home/jovyan
+> > [I 07:55:58.103 NotebookApp] The Jupyter Notebook is running at:
+> > [I 07:55:58.103 NotebookApp] http://(a14f3c38dc24 or 127.0.0.1):8888/?token=abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuv
+> > [I 07:55:58.103 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+> > [C 07:55:58.106 NotebookApp] 
+> >     
+> >     To access the notebook, open this file in a browser:
+> >         file:///home/jovyan/.local/share/jupyter/runtime/nbserver-6-open.html
+> >     Or copy and paste one of these URLs:
+> >         http://(a14f3c38dc24 or 127.0.0.1):8888/?token=abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuv
+> > ```
+> > {: .output}
+> {: .solution}
+> 
+> Copy the token, in this example `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuv`, in the clipboard. 
+> 
+> Then use your web browser to go to `localhost` if you are running Docker on your machine, or `<Your VMs IP Address>` if you are running on a cloud service. 
+> 
+> Paste the token to access your containerised Jupyter server!
+
+
+> Once you are done, close the browser window, then stop the container.
+> 
+> > ## Solution ##
 > > 
 > > ```
 > > $ docker stop jupyter
 > > ```
 > > {: .bash}
+> >
+> > ```
+> > jupyter
+> > ```
+> > {: .output}
 > {: .solution}
 {: .challenge}
