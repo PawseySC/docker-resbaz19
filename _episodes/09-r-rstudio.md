@@ -4,7 +4,7 @@ teaching: 0
 exercises: 20
 questions:
 objectives:
-- Run an R workflow both through RStudio and the terminal using containers
+- Run an R workflow through both the terminal and RStudio using containers
 keypoints:
 - Containers are great way to manage R workflows.  You likely still want to have a local installation of R/Rstudio for some testing, but if you have set workflows, you can use containers to manage them.  You can also provide Rstudio servers for collaborators
 ---
@@ -114,63 +114,5 @@ Once you're done, stop the container with:
 
 ```
 $ docker stop rstudio
-```
-{: .bash}
-
-
-### Running a scripted R workflow on HPC with Shifter ###
-
-We can run the same analysis on HPC through command line using Shifter. 
-
-To get started let's pull the required R container image:
-
-```
-$ module load shifter
-$ sg $PAWSEY_PROJECT -c 'shifter pull rocker/tidyverse:3.5'
-```
-{: .bash}
-
-Now let's change directory to either `$MYSCRATCH` or `$MYGROUP`, e.g.
-
-```
-$ cd $MYSCRATCH
-```
-{: .bash}
-
-Let's create a dedicated directory and download the sample data:
-
-```
-$ mkdir r_example
-$ cd r_example
-$ wget http://swcarpentry.github.io/r-novice-inflammation/data/r-novice-inflammation-data.zip
-$ unzip -q r-novice-inflammation-data.zip
-```
-{: .bash}
-
-With your favourite text editor, create the R file `readings-06.R` (see contents above),
-
-and then create a SLURM script, we'll call it `rscript.sh` (remember to specify your Pawsey project ID in the script!):
-
-```
-#!/bin/bash -l
-
-#SBATCH --account=<your-pawsey-project>
-#SBATCH --partition=workq
-#SBATCH --ntasks=1
-#SBATCH --time=00:05:00
-#SBATCH --export=NONE
-#SBATCH --job-name=rstudio
-
-module load shifter
-
-# run R script
-srun --export=all shifter run rocker/tidyverse:3.5 Rscript readings-06.R --mean data/inflammation-*.csv
-```
-{: .bash}
-
-Let's submit the script via SLURM:
-
-```
-$ sbatch --reservation <your-pawsey-reservation> rscript.sh
 ```
 {: .bash}
