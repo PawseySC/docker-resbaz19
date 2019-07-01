@@ -28,76 +28,49 @@ $ docker pull rocker/tidyverse:3.5
 
 ### Running a scripted R workflow on the shell ###
 
-Let us create a dedicated directory for this example:
+Let us `cd` to the `06_rstudio` demo directory:
 
 ```
-$ mkdir r_example
-$ cd r_example
-```
-{: .bash}
-
-We are going to use a minimalistic example taken from the workshop [Programming with R](http://swcarpentry.github.io/r-novice-inflammation/) by the Software Carpentry.
-The script `readings-06.R` from their [Episode 5](http://swcarpentry.github.io/r-novice-inflammation/05-cmdline/index.html) is made available here for convenience, you can copy-paste the content in a file using your favourite text editor:
-
-```
-main <- function() {
-  args <- commandArgs(trailingOnly = TRUE)
-  action <- args[1]
-  filenames <- args[-1]
-  stopifnot(action %in% c("--min", "--mean", "--max"))
-
-  if (length(filenames) == 0) {
-    process(file("stdin"), action)
-  } else {
-    for (f in filenames) {
-      process(f, action)
-    }
-  }
-}
-
-process <- function(filename, action) {
-  dat <- read.csv(file = filename, header = FALSE)
-
-  if (action == "--min") {
-    values <- apply(dat, 1, min)
-  } else if (action == "--mean") {
-    values <- apply(dat, 1, mean)
-  } else if (action == "--max") {
-    values <- apply(dat, 1, max)
-  }
-  cat(values, sep = "\n")
-}
-
-main()
-```
-{: .r}
-
-Let us download and unzip the required sample dataset:
-
-```
-$ wget http://swcarpentry.github.io/r-novice-inflammation/data/r-novice-inflammation-data.zip
-$ unzip -q r-novice-inflammation-data.zip
+$ cd <top-level>/demos/06_rstudio
 ```
 {: .bash}
 
-Now, we can run the R script using the R container we pulled; we're going to compute average values in this example:
+We are going to use an example example that has been derived from the workshop [Programming with R](http://swcarpentry.github.io/r-novice-inflammation/) by the Software Carpentry.
+In particular, their [Episode 5](http://swcarpentry.github.io/r-novice-inflammation/05-cmdline/index.html) is the source for the dataset and the R script file; the latter has been adapted for this workshop.
+
+
+Now, let us run the R script using the R container we pulled; we're going to compute average values in this example:
 
 ```
-$ docker run -v `pwd`:/data -w /data rocker/tidyverse:3.5 Rscript readings-06.R --mean data/inflammation-*.csv
-```
-{: .bash}
-
-
-### Using an RStudio web server to run the analysis ###
-
-Let us start up the web server using the following `docker` command:
-
-```
-$ docker run -d -p 80:8787 --name rstudio -v `pwd`/data:/home/rstudio/data -e PASSWORD=<Pick your password> rocker/tidyverse:3.5
+$ docker run -v `pwd`:/data -w /data rocker/tidyverse:3.5 Rscript readings-density.R --mean inflammation-density.png data/inflammation-*.csv
 ```
 {: .bash}
 
-Here we're opening up the container port `8787` and mapping it to the host port `80` so we can access the Rtudio server remotely. Note you need to store a password in a variable; it will be required below for the web login.
+```
+5.45
+5.425
+6.1
+[..]
+6.875
+6.025
+6.9
+Saving 7 x 7 in image
+```
+{: .output}
+
+The analysis outputs a plot in a picture file, `inflammation-density.png`, that can be opened and visualised.
+
+
+### Using an RStudio web server to run the workflow ###
+
+Let us setup an RStudio web server using Docker, by using the following command:
+
+```
+$ docker run --rm -d -p 80:8787 --name=rstudio -v `pwd`:/home/rstudio -e PASSWORD=<Pick your password> rocker/tidyverse:3.5
+```
+{: .bash}
+
+Here we're opening up the container port `8787` and mapping it to the host port `80` so we can access the Rtudio server remotely. Note you need to store a password in a variable; it will be required below for the web login. Also, we are mapping the current directory into `home/rstudio` in the container; this is the default RStudio working directory in Rocker containers.
 
 You just need to open a web browser and point it to `localhost` if you are running Docker on your machine, or `<Your VM's IP Address>` if you are running on a cloud service.
 
@@ -106,9 +79,11 @@ You should see a prompt for credentials, with user defaulting to `rstudio`, and 
 Now you can run the same analysis from the RStudio console:
 
 ```
-> system("Rscript readings-06.R --mean data/inflammation-*.csv")
+> source("readings-density.R")
 ```
 {: .r}
+
+This time the output plot is saved in the file `interactive.png`.
 
 Once you're done, stop the container with:
 
