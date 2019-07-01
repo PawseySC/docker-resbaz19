@@ -5,3 +5,6 @@
 .sass-cache
 __pycache__
 _site
+demos/*/Rplots.pdf
+demos/*/*.png
+demos/*/.rstudio
