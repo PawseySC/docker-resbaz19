@@ -35,8 +35,10 @@ ffbb0f60bda6        ubuntu              "/bin/echo 'hello wor"   51 minutes ago 
 ```
 {: .output}
 
+This is how cleaning by ID looks like:
+
 ```
-$ docker rm ffbb0f60bda6 960588723c36 # cleaning by ID
+$ docker rm ffbb0f60bda6 960588723c36
 ```
 {: .bash}
 
@@ -46,8 +48,10 @@ ffbb0f60bda6
 ```
 {: .output}
 
+And this is cleaning by name:
+
 ```
-$ docker rm sad_keller ecstatic_hugle # cleaning by name
+$ docker rm sad_keller ecstatic_hugle
 ```
 {: .bash}
 
@@ -56,6 +60,8 @@ sad_keller
 ecstatic_hugle
 ```
 {: .output}
+
+Let's check the list of containers again, it will be shorter:
 
 ```
 $ docker ps --all
@@ -84,7 +90,7 @@ $ docker rm `docker ps --all -q`
 ```
 {: .output}
 
-Now that we've removed the containers, let's clean up the images they came from. This uses the `docker images` and `docker rmi` commands, in a similar manner:
+Now that we've removed the containers, let's clean up the images they came from. This uses the `docker images` and `docker rmi` commands, in a similar manner, to list images:
 
 ```
 $ docker images
@@ -97,6 +103,8 @@ ubuntu              latest              4ca3a192ff2a        22 hours ago        
 nginx               latest              abf312888d13        2 days ago          181.5 MB
 ```
 {: .output}
+
+... and to remove specific image(s):
 
 ```
 $ docker rmi ubuntu
@@ -164,7 +172,7 @@ Error response from daemon: conflict: unable to remove repository reference "ngi
 > > {: .output}
 > {: .solution}
 > 
-> Then, identify the stopped `miniconda3` containers you ran in the previous episode. You can use either IDs or NAMES. 
+> Then, identify the stopped `miniconda3` containers you ran in the previous episode. You can use either the IDs or NAMES column. 
 > 
 > Hint: you can identify them as they will correspond to the image `continuumio/miniconda3:4.5.12`.
 > 
@@ -187,11 +195,11 @@ Error response from daemon: conflict: unable to remove repository reference "ngi
 > > or 
 > > 
 > > ```
-> > $ docker rm <list of Names>
+> > $ docker rm <list of names>
 > > ```
 > > {: .bash}
 > > 
-> > In this specific example, the complete commands are:
+> > Sample commands:
 > > ```
 > > $ docker rm ed6ccf413d3e 6f872cae5a24
 > > ```
@@ -217,7 +225,7 @@ Error response from daemon: conflict: unable to remove repository reference "ngi
 > > {: .output}
 > {: .solution}
 > 
-> Let us NOT remove the container image, we'll need it later.
+> Let us NOT remove the `miniconda3` image, we'll need it later.
 {: .challenge}
 
 
