@@ -254,21 +254,40 @@ Docker has several ways to mount data into containers. Here we've only partially
 > ```
 > {: .bash}
 > 
-> We need to prepare the zebrafish database with `makeblastdb` for the search, so we'll run the following (see a previous episode for details on `-v`):
+> We need to prepare the zebrafish database with `makeblastdb` for the search, using the following command:
 > 
 > ```
-> $ docker run -v `pwd`:/data/ biocontainers/blast:v2.2.31_cv2 makeblastdb -in zebrafish.1.protein.faa -dbtype prot
-> ```
-> {: .bash}
-> 
-> After the container has terminated, you should see several new files in the current directory.  We can now do the final alignment step using `blastp`:
-> 
-> ```
-> $ docker run -v `pwd`:/data/ biocontainers/blast:v2.2.31_cv2 blastp -query P04156.fasta -db zebrafish.1.protein.faa -out results.txt
+> $ makeblastdb -in zebrafish.1.protein.faa -dbtype prot
 > ```
 > {: .bash}
 > 
-> The final results are stored in `results.txt`;
+> To run it through the container, you will need to mount the current directory to be able to read inputs and write outputs to the host.
+> Hint: the default directory in this BLAST image is `/data`, which can then be used as a convenient mount directory.
+> 
+> > ## Solution ##
+> > 
+> > ```
+> > $ docker run -v `pwd`:/data/ biocontainers/blast:v2.2.31_cv2 makeblastdb -in zebrafish.1.protein.faa -dbtype prot
+> > ```
+> > {: .bash}
+> {: .solution}
+> 
+> After the container has terminated, you should see several new files in the current directory.  We can now do the final alignment step using `blastp`, i.e.:
+> 
+> ```
+> $ blastp -query P04156.fasta -db zebrafish.1.protein.faa -out results.txt
+> ```
+> {: .bash}
+> 
+> > ## Solution ##
+> > 
+> > ```
+> > $ docker run -v `pwd`:/data/ biocontainers/blast:v2.2.31_cv2 blastp -query P04156.fasta -db zebrafish.1.protein.faa -out results.txt
+> > ```
+> > {: .bash}
+> {: .solution}
+> 
+> The final results are stored in `results.txt`:
 > 
 > ```
 > $ less results.txt
