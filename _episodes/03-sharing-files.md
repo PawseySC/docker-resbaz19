@@ -198,7 +198,7 @@ Docker has several ways to mount data into containers. Here we've only partially
 > 
 > We'll be running a BLAST (Basic Local Alignment Search Tool) example with a container from [BioContainers](https://biocontainers.pro).  BLAST is a tool bioinformaticians use to compare a sample genetic sequence to a database of known seqeuences; it's one of the most widely used bioinformatics tools.
 > 
-> To begin, try and pull the BLAST container `biocontainers/blast:v2.2.31_cv2` (this will take a little bit):
+> To begin, try and pull the BLAST image `biocontainers/blast:v2.2.31_cv2` (this will take a little bit):
 > 
 > > ## Solution ##
 > > 
@@ -218,7 +218,7 @@ Docker has several ways to mount data into containers. Here we've only partially
 > > {: .output}
 > {: .solution}
 > 
-> Now, run a simple command to verify the container works, for instance `blastp -help`:
+> Now, run a simple command to verify the image works, for instance `blastp -help`:
 > 
 > > ## Solution ##
 > > 
@@ -254,20 +254,21 @@ Docker has several ways to mount data into containers. Here we've only partially
 > ```
 > {: .bash}
 > 
-> We need to prepare the zebrafish database with `makeblastdb` for the search, using the following command:
+> We need to prepare the zebrafish database with `makeblastdb` for the search, using the following command through a container:
 > 
 > ```
 > $ makeblastdb -in zebrafish.1.protein.faa -dbtype prot
 > ```
 > {: .bash}
 > 
-> To run it through the container, you will need to mount the current directory to be able to read inputs and write outputs to the host.
+> To run it via Docker, you will need to mount the current directory to be able to read inputs and write outputs on the host.
+> 
 > Hint: the default directory in this BLAST image is `/data`, which can then be used as a convenient mount directory.
 > 
 > > ## Solution ##
 > > 
 > > ```
-> > $ docker run -v `pwd`:/data/ biocontainers/blast:v2.2.31_cv2 makeblastdb -in zebrafish.1.protein.faa -dbtype prot
+> > $ docker run -v `pwd`:/data biocontainers/blast:v2.2.31_cv2 makeblastdb -in zebrafish.1.protein.faa -dbtype prot
 > > ```
 > > {: .bash}
 > {: .solution}
@@ -282,7 +283,7 @@ Docker has several ways to mount data into containers. Here we've only partially
 > > ## Solution ##
 > > 
 > > ```
-> > $ docker run -v `pwd`:/data/ biocontainers/blast:v2.2.31_cv2 blastp -query P04156.fasta -db zebrafish.1.protein.faa -out results.txt
+> > $ docker run -v `pwd`:/data biocontainers/blast:v2.2.31_cv2 blastp -query P04156.fasta -db zebrafish.1.protein.faa -out results.txt
 > > ```
 > > {: .bash}
 > {: .solution}
