@@ -14,42 +14,33 @@ keypoints:
 
 ### What is a Dockerfile? ###
 
-A Dockerfile is a recipe to build a container image with Docker. It is basically a collection of the standard shell commands you would use to build your software through prompt; in addition, it contains Docker-specific instructions that handle the build process. We will see some examples below.
+A Dockerfile is a recipe to build an image. It is a collection of the standard shell commands you would use to build your software through prompt; in addition, it contains Docker-specific instructions that handle the build process. We will see some examples below.
 
 
 ### Let's write a Dockerfile ###
 
-We will build a very simple container image: a Ubuntu box featuring tools for building software and a text editor. Its Dockerfile will contain most of the basic Docker instructions that can also be used to build more complicated images.
+We'll build up to a more complicated image, but for now we'll start with a basic Ubuntu Linux image and install some compilers and other common linux utilities.
 
-First let us create a directory where we'll store the Dockerfile. This directory will be the so called Docker **build context**. Docker will include files in this directory in the build process and in the final image. As a by-product, this will make the build process longer and the image larger, so that we want to include only those strictly required for the build, even none if possible.
-
+To begin, `cd` to the `05_build_intro` demo directory:
 ```
-$ mkdir build_dockerfile
-$ cd build_dockerfile
+$ cd <top-level>/demos/05_build_intro
 ```
 {: .bash}
 
-Now use your favourite text editor to create a file named `Dockerfile` and edit it. Here is its contents:
+Now use your favourite text editor to create a file named `Dockerfile` and add the following:
 
 ```
 FROM ubuntu:18.04
-  
+
 MAINTAINER Your Name <youremail@yourdomain>
 
 RUN apt-get update && \
     apt-get install -y \
-        autoconf \
-        automake \
-        g++ \
-        gcc \
-        gfortran \
-        make \
-        nano \
+        build-essential \
+        git \
+        wget \
     && apt-get clean all \
     && rm -rf /var/lib/apt/lists/*
-
-VOLUME ["/data"]
-WORKDIR /data
 
 CMD ["/bin/bash"]
 ```
@@ -58,44 +49,43 @@ CMD ["/bin/bash"]
 * `FROM`: compulsory, it provides the starting image we will use to build our customised one;
 * `MAINTAINER`: details of the person who wrote the Dockerfile, optional;
 * `RUN`: this is the most used instruction, that alllows to run most shell commands during the build. Multiple `RUN` instructions are often found in a single Dockerfile;
-* `VOLUME`: creates a mount point ready to be used for mounting external (e.g. host) volumes; creates the corresponding directory if not existing;
-* `WORKDIR`: changes directory to the specified path; the last current directory in the build will be the working directory in the running container.  
-  **Note**: if you use instead `RUN cd <..>`, the changed directory will only persist within that `RUN` instruction, and then be lost in subsequent build steps;
 * `CMD`: specifies the default command to be executed with the container. `bash` is the default anyway for Ubuntu containers, but it's good to be aware of this syntax.
 
 
 ### Building the image ###
 
-Once the Dockerfile is ready, let us build the image with `docker build`:
+Once the Dockerfile is ready, let us build the image with `docker build` (we'll name it **supernova** for a later purpose):
 
 ```
-$ docker build -t build:2019May29 .
+$ docker build -t supernova .
 ```
+
 {: .bash}
 
 ```
 Sending build context to Docker daemon  2.048kB
-Step 1/6 : FROM ubuntu:18.04
- ---> d131e0fa2585
+Step 1/4 : FROM ubuntu:18.04
+18.04: Pulling from library/ubuntu
+Digest: sha256:9b1702dcfe32c873a770a32cfd306dd7fc1c4fd134adfb783db68defc8894b3c
+Status: Downloaded newer image for ubuntu:18.04
+ ---> 4c108a37151f
 [..]
-Step 6/6 : CMD ["/bin/bash"]
- ---> Running in fb003b87b020
-Removing intermediate container fb003b87b020
- ---> 8986ee76d9a9
-Successfully built 8986ee76d9a9
-Successfully tagged build:2019May29
+Step 4/4 : CMD ["/bin/bash"]
+ ---> Running in 50bf59fd7477
+Removing intermediate container 50bf59fd7477
+ ---> ff79d520ab57
+Successfully built ff79d520ab57
+Successfully tagged supernova:latest
 ```
+
 {: .output}
 
-In the command above, `.` is the location of the build context (i.e. the directory for the Dockerfile).  
-The `-t` flag is used to specify the image name (compulsory) and tag (optional).
+In the command above, `.` indicates to Docker that everything it needs to build the image is located in the current directory (this is known as  the **build context**).  Docker will assume there is a file named `Dockerfile`, 
+but it's possible to specify a filename if you want (e.g. `docker build -f MyDockerfile .`)
 
-Any lowercase alphanumeric string can be used as image name; here we've used `build`. The image tag (following the colon) can be optionally used to maintain a set of different image versions on Docker Hub, and is a key feature in enabling reproducibility of your computations through containers; here we've used `2019May29`.
+The `-t` flag is used to specify the image name (compulsory) and tag (optional). As we haven't tagged our image, Docker automatically assigns it the **latest** tag.  We'll tag our image later, as it's good practice to 
+track and manage different versions of your images.
 
-Adding the prefix `<Your Docker Hub account>/` to the image name is also optional and allows to push the built image to your Docker Hub registry (see below). 
-
-The complete format for the image name looks like: `<Your Docker Hub account ^>/<Image name>:<Image tag ^>`. `^`These are optional.
- 
 
 ### Layers in a container image ###
 
@@ -131,6 +121,7 @@ If you have a (free) Docker Hub account you must first login to Docker.
 ```
 $ docker login
 ```
+
 {: .bash}
 
 
@@ -139,30 +130,140 @@ You are now ready to push your newly created image to the Docker Hub web registr
 First, let us create a second tag for the image, that includes your Docker Account. To this end we'll use `docker tag`:
 
 ```
-$ docker tag build:2019May29 <your-dockerhub-account>/build:2019May29
+$ docker tag supernova:1.0 <your-dockerhub-account>/supernova:1.0
 ```
+
 {: .bash}
 
 Now we can push the image:
 
 ```
-$ docker push <your-dockerhub-account>/build:2019May29
+$ docker push <your-dockerhub-account>/supernova:1.0
 ```
+
 {: .bash}
 
 ```
-The push refers to repository [docker.io/marcodelapierre/build]
-cab15c00fd34: Pushed 
-cf5522ba3624: Pushed 
+The push refers to repository [docker.io/bskjerven/supernova]
+cab15c00fd34: Pushed
+cf5522ba3624: Pushed
 [..]
-2019May29: digest: sha256:bcb0e09927291c7a36a37ee686aa870939ab6c2cee2ef06ae4e742dba4bb1dd4 size: 1569
+1.0: digest: sha256:bcb0e09927291c7a36a37ee686aa870939ab6c2cee2ef06ae4e742dba4bb1dd4 size: 1569
 ```
+
 {: .output}
 
 Congratulations! Your image is now publicly available for anyone to pull.
 
 
-### Base images for Python ###
+### Building a De Novo Assembly Image ###
+
+Now let's try building a real image.  We'll create an image for the de novo assembly tool, **Supernova**, from [10x Genomics](https://support.10xgenomics.com/de-novo-assembly/software/overview/latest/welcome).
+We'll use the same Dockerfile as before, but add some commands to download and install the Supernova software:
+
+
+```
+FROM ubuntu:18.04
+
+RUN apt-get update && \
+    apt-get install -y \
+        build-essential \
+        git \
+        wget \
+    && apt-get clean all \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+
+RUN wget -O supernova-2.1.1.tar.gz \
+      "http://cf.10xgenomics.com/releases/assembly/supernova-2.1.1.tar.gz?Expires=1561979120&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4xLjEudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTYxOTc5MTIwfX19XX0_&Signature=YLbLl4BRup5H-lvtBdZl9ipIJfkERELF5E9kkEsnjwesw0XT8Mf9RQ4kp8k9ngOc8x10IdG1EIq~NZQtkW~XVRnLCdO3JXbanp~k-ROXqO-GWfBJJ5maY2A4XrB1TsTvBe-cUSUQkr~DsqLlga3ZP8KvmurRArj0acAYmXJnoxpnwPNCEQA59tRlZyTvkU9wpCJfZpBp6PJVXx~AX0OZmmFdMeAIdtuYp388UJar-yfWbSHD832Ci3V~a1A2rIoY~fqi8hNxpBOjqrfj-dDhSQg0vPskiV2LAwWblSPScIFdS7lPsb67U~ABdAalnYYSHkTAgARlFVkUHpg45rxklQ__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" \
+      && tar xf supernova-2.1.1.tar.gz \
+      && rm -rf supernova-2.1.1.tar.gz
+
+ENV PATH="/opt/supernova-2.1.1:${PATH}"
+
+WORKDIR /
+```
+
+After installing software via `apt-get` we set our working directory to `/opt` inside the image.  This is equivalent to running `mkdir /opt; cd /opt`, but we don't need to use a `RUN` directive.  It also means all subsusquent
+Docker commands command will execute in `/opt` unless we specify otherwise.
+
+The `RUN wget -O supernova-2.1.1.tar.gz` section downloads the Supernova code from 10x, untars it, and then removes the archived file.  10x requires us to register to download the software, and then generates the long authentication you see in the
+download link.
+
+After downloading and untarring we need to upate the `PATH` environment variable so we can use Supernova.  We can use the `ENV` directive to update the images environment variables.
+
+Finally, we set the final working directory to `/`.
+
+We can now build and tag this image (this will take a few minutes):
+
+```
+docker build -t supernova:2.1.1 .
+```
+
+```
+Sending build context to Docker daemon  3.584kB
+Step 1/5 : FROM ubuntu:18.04
+ ---> 4c108a37151f
+...
+Removing intermediate container dd8f97a79085
+ ---> 4a1ebcb33087
+Step 5/5 : ENV PATH="/opt/supernova-2.1.1:${PATH}"
+ ---> Running in 2515194a953b
+Removing intermediate container 2515194a953b
+ ---> e3b912a7329a
+Successfully built e3b912a7329a
+Successfully tagged supernova:2.1.1
+```
+
+### Running Supernova ###
+
+We'll run a small, built-in test example and access it via a web browser:
+
+```
+docker run -d -p 80:3600 --name=supernova supernova:2.1.1 supernova testrun --id=tiny --localcores=4 --uiport=3600
+```
+
+Recall the Docker options `-d` (run in the background) and `-p 80:3600` (mapping ports between the host & the container).  Supernova has a built-in `testrun` function, and we pass the name of the dataset we want to use, `--id=tiny`.
+Supernova also lets us specify compute resources to use (`--localcores=4`) and what port the web UI should be served on (`--uiport=3600`, this needs to match what we specify in the Docker port mapping option).
+
+Once that starts we can query the running container to find out how to access the web UI:
+
+```
+skj002@turing ~/r/supernova ❯❯❯ docker logs supernova
+supernova testrun (2.1.1)
+Copyright (c) 2018 10x Genomics, Inc.  All rights reserved.
+-------------------------------------------------------------------------------
+
+Running Supernova in test mode...
+
+Martian Runtime - '2.1.1-v2.3.3'
+Serving UI at http://20aa3af2bc1d:3600?auth=ORqTR6Zd7Df-amLz2ExKd3hotS6dPwO919bQkr7jWQs
+
+Running preflight checks (please wait)...
+```
+
+That website is using a hostname internal to the container; we need to open up `http://localhost` but use the same port and auth key: 
+
+```
+http://localhost:3600?auth=ORqTR6Zd7Df-amLz2ExKd3hotS6dPwO919bQkr7jWQs
+```
+
+Note that your auth key will be different from the above one.  You should then see an overview of the pipeline like this:
+
+![Supernova Pipeline]({{ page.root }}/fig/supernova_pipeline.png)
+
+This will take a while to run, and we need to use the port for other examples.  To stop your Supernova container:
+
+```
+docker stop supernova
+docker rm supernova
+``
+`
+
+### Base images for ###
+
+It's often not necessary to build an entire application from bare bones.  There are numerous 
 
 [continuumio/miniconda2](https://hub.docker.com/r/continuumio/miniconda2/tags) and [continuumio/miniconda3](https://hub.docker.com/r/continuumio/miniconda3/tags) are Docker images provided by the maintainers of the [Anaconda](https://anaconda.org) project. They ship with Python 2 and 3, respectively, as well as `pip` and `conda` to install and manage packages. At the time of writing, the most recent version is `4.5.12`, which is based on Python `2.7.15` and `3.7.1`, respectively.
 
@@ -177,55 +278,6 @@ The [Rocker Project](https://www.rocker-project.org) maintains a number of good 
 
 Other more basic images are [rocker/r-ver](https://hub.docker.com/r/rocker/r-ver/tags) (R only) and [rocker/rstudio](https://hub.docker.com/r/rocker/rstudio/tags) (R + RStudio).
 
-
-> ## Build your own Scientific Python container ##
-> 
-> Using `continuumio/miniconda3:4.5.12` as base image, create an image called `mypython`, which includes the Python packages **numpy**, **scipy** and **pandas**. Hint: you can use `pip install` or `conda install -y` in the Dockerfile to this end. 
-> 
-> If you have a Docker Hub account, for the image name use the format `<Your Docker Hub account>/<Image name>:<Version tag>`. Then, push the image to the web registry.
-> 
-> > ## Solution ##
-> > 
-> > Dockerfile:
-> > 
-> > ```
-> > FROM continuumio/miniconda3:4.5.12
-> > 
-> > MAINTAINER Marco De La Pierre <marco.delapierre@pawsey.org.au>
-> > 
-> > RUN pip install numpy scipy pandas
-> > 
-> > VOLUME ["/data"]
-> > WORKDIR /data
-> > 
-> > CMD ["/bin/bash"]
-> > ```
-> > {: .source}
-> > 
-> > Build the image:
-> > 
-> > a) Plain (no Docker Hub account):
-> > 
-> > ```
-> > $ docker build -t mypython:2019Apr23 .
-> > ```
-> > {: .bash}
-> > 
-> > b) With a Docker Hub account:
-> > 
-> > ```
-> > $ docker build -t <your-dockerhub-account>/mypython:2019Apr23 .
-> > ```
-> > {: .bash}
-> > 
-> > Push the image (optional):
-> > 
-> > ```
-> > $ docker push <your-dockerhub-account>/mypython:2019Apr23
-> > ```
-> > {: .bash}
-> {: .solution}
-{: .challenge}
 
 
 > ## Best practices ##
