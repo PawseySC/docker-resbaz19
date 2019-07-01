@@ -63,7 +63,7 @@ process_many <- function(files, action, outplot = NULL) {
 
 if(interactive()) {
     # Interactive example
-    process_many(fs::dir_ls("data", glob = "data/inflammation*"), "mean")
+    process_many(fs::dir_ls("data", glob = "data/inflammation*"), "mean", "plots.png")
 } else {
     # Run when used from command line
     main()
