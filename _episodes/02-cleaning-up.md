@@ -147,14 +147,16 @@ Error response from daemon: conflict: unable to remove repository reference "ngi
 {: .error}
 
 
-
-#### Dangling & Unused Images ####
+### Dangling & Unused Images ###
 
 After building and pulling images you may eventually find that your list of images includes with the name `<none>:<none>`:
 
 ```
-> docker images
+$ docker images
+```
+{: .bash}
 
+```
 REPOSITORY                     TAG                 IMAGE ID            CREATED             SIZE
 <none>                         <none>              bc47408f7de6        14 hours ago        141MB
 <none>                         <none>              9cbb4d4f03e4        14 hours ago        135MB
@@ -162,35 +164,40 @@ pytorch-jupyter                latest              1fc491b0444e        20 hours 
 resbaz-plot-ex                 latest              2bf0de9138f1        21 hours ago        5.72GB
 rocker/tidyverse               latest              1692d80ba11b        33 hours ago        2.1GB
 ```
+{: .output}
 
 These are what are known as **dangling images**.  These are produced as a result of `docker pull` and `docker build`.  If you rebuild an image, but don't rename it, the old image is left *dangling*.
-Dangling images are not tagged and not referenced by anohter container.  One issue with these is that they can take up disk space, so periodically you may need to remove them.  Rather than trying to keep track of all the image IDs and names, we use a single command to 
-query the daingling images:
+Dangling images are not tagged and not referenced by anohter container.  One issue with these is that they can take up disk space, so periodically you may need to remove them.  Rather than trying to keep track of all the image IDs and names, we use a single command to query the daingling images:
 
 ```
-docker images -q -f dangling=true
+$ docker images -q -f dangling=true
 ```
+{: .bash}
 
 and we can easily remove all dangling images with:
 
 ```
-docker image prune
+$ docker image prune
 ```
+{: .bash}
 
 You can also build up **unused images**.  When you pull an image it's pulled layer by layer.  Only the final layer is given a name like `ubuntu:latest`.  The other images are unused, but technically
 associated with another image.  The good news is that unused images don't take up disk space.  If you want to remove all unused images (in addition to all dangling images), we use the `-a` flag:
 
 ```
-docker image prune -a
+$ docker image prune -a
 ```
+{: .bash}
 
 We won't cover it in this course, but Docker can also be used to set up virtual networks and volumes.  If you wish to prune ***everything*** (stopped containers, unused/dangling images, build cache, networks, & volumes) 
 you can use the following command:
 
 ```
-docker system prune --volumes
+$ docker system prune --volumes
 ```
-_**WARNING:** This will remove everything, and may result in data loss
+{: .bash}
+
+**WARNING:** This will remove everything, and may result in data loss
 
 
 > ## Clean up Miniconda containers from previous episode ##
