@@ -156,11 +156,19 @@ mdelapierre@zeus-1:/group/pawsey0001/mdelapierre$ exit   # or hit CTRL-D
 ```
 {: .bash}
 
+
+### MPI- and GPU- enabled packages with Shifter
+
 Shifter has support to run containers exploiting MPI parallelism and GPU acceleration (the latter only through CSCS Shifter).
 
 * `shifter run --mpi` allows containers to take advantage on inter-node communication on the host fabric. The container image needs to have been built with MPI libraries thatare ABI compatible with the host MPI libraries;
 
 * to run GPU enabled containers, no extra flags are required.
+
+
+### Can Shifter build container images? ###
+
+Shifter does not allow to build container images. The best way to create an image to be pulled and run through it is to use Docker on a distinct machine (see previous episode).
 
 
 ### Using Shifter with a job scheduler ###
@@ -195,94 +203,62 @@ $ sbatch --reservation <your-pawsey-reservation> hostname.sh
 {: .bash}
 
 
-### Can Shifter build container images? ###
+### Running BLAST on HPC with Shifter ###
 
-Shifter does not allow to build container images. The best way to create an image to be pulled and run through it is to use Docker on a distinct machine (see previous episode).
+As a practical use case, let us re-run the BLAST bioinformatics example from a previous episode using Shifter in a HPC environment.
 
+First, let us pull the BLAST container:
 
-> ## Run a Python app in a container on HPC ##
-> 
-> First, pull the container `continuumio/miniconda3:4.5.12`.
-> 
-> Then, with your favourite text editor create a file called `app.py` with the following content:
-> 
-> ```
-> import sys
-> 
-> def print_sums(data):
->     with open("row_sums",'w') as output:
->         for line in data:
->             row = 0
->             for word in line.strip().split():
->                 row += int(word)
->             output.write(str(row)+"\n")
->             print("Sum of the row is ",row)
-> 
-> if len(sys.argv) > 1 and sys.argv[1] != "-":
->     with open(sys.argv[1], 'r') as infile:
->         print_sums(infile)
-> else:
->     print_sums(sys.stdin)
-> ```
-> {: .python}
-> 
-> and an input file `input` containing:
-> 
-> ```
-> 1 2 3
-> 4 5 6
-> 7 8 9
-> ```
-> {: .source}
-> 
-> The app reads rows containing integers and outputs their sums line by line. Input can be given through file or via standard input. The output is produced both in formatted form through standard output and in raw form written to a file named `row_sums`.
-> 
-> Now, run `python app.py` using the the container image you have just pulled. For instance, give the input filename as an argument to the app.
-> 
-> Finally, re-run it by means of a SLURM script called `python_slurm.sh`.
-> 
-> > ## Solution ##
-> > 
-> > Pull the container image:
-> > 
-> > ```
-> > $ sg $PAWSEY_PROJECT -c 'shifter pull continuumio/miniconda3:4.5.12'
-> > ```
-> > {: .bash}
-> > 
-> > Run the app:
-> > 
-> > ```
-> > $ shifter run continuumio/miniconda3:4.5.12 python app.py input
-> > ```
-> > {: .bash}
-> > 
-> > SLURM script for scheduler submission, `python_slurm.sh` (insert Pawsey Project ID!):
-> > 
-> > ```
-> > #!/bin/bash -l
-> > 
-> > #SBATCH --account=<your-pawsey-project>
-> > #SBATCH --partition=workq
-> > #SBATCH --ntasks=1
-> > #SBATCH --time=00:05:00
-> > #SBATCH --export=NONE
-> > #SBATCH --job-name=python
-> > 
-> > module load shifter
-> > 
-> > srun --export=all shifter run continuumio/miniconda3:4.5.12 python app.py input
-> > ```
-> > {: .bash}
-> > 
-> > SLURM submission:
-> > 
-> > ```
-> > $ sbatch --reservation <your-pawsey-reservation> python_slurm.sh
-> > ```
-> > {: .bash}
-> {: .solution}
-{: .challenge}
+```
+$ module load shifter
+$ sg $PAWSEY_PROJECT -c 'shifter pull biocontainers/blast:v2.2.31_cv2'
+```
+{: .bash}
+
+The following script permits to execute the entire bioinformatics example using Shifter and the SLURM scheduler:
+
+```
+#!/bin/bash -l
+
+#SBATCH --account=<your-pawsey-project>
+#SBATCH --partition=workq
+#SBATCH --ntasks=1
+#SBATCH --time=00:05:00
+#SBATCH --export=NONE
+#SBATCH --job-name=blast
+
+module load shifter
+
+# download sample inputs
+wget http://www.uniprot.org/uniprot/P04156.fasta
+curl -O ftp://ftp.ncbi.nih.gov/refseq/D_rerio/mRNA_Prot/zebrafish.1.protein.faa.gz
+gunzip zebrafish.1.protein.faa.gz
+
+# prepare database
+srun --export=all shifter run biocontainers/blast:v2.2.31_cv2 makeblastdb -in zebrafish.1.protein.faa -dbtype prot
+
+# align with BLAST
+srun --export=all shifter run biocontainers/blast:v2.2.31_cv2 blastp -query P04156.fasta -db zebrafish.1.protein.faa -out results.txt
+```
+{: .bash}
+
+Now you can create a test directory somewhere under `$MYSCRATCH` or `$MYGROUP`, e.g.
+
+```
+$ cd $MYSCRATCH
+$ mkdir blast_example
+$ cd blast_example
+```
+{: .bash}
+
+use your favourite text editor to copy paste the script above in a file called `blast.sh` (remember to specify your Pawsey project ID in the script!),
+
+and then submit this script using SLURM:
+
+```
+$ sbatch --reservation <your-pawsey-reservation> blast.sh
+```
+{: .bash}
 
 
 ### HPC containers with Singularity at NCI ###
