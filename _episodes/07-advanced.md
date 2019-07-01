@@ -1,7 +1,7 @@
 ---
 title: "Docker advanced topics"
 teaching: 15
-exercises: 5
+exercises: 0
 questions:
 objectives:
 - Learn how to set custom user and group IDs in a container

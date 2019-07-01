@@ -1,7 +1,7 @@
 ---
 title: "Sharing files with the host with Docker"
-teaching: 10
-exercises: 20
+teaching: 15
+exercises: 15
 questions:
 objectives:
 - Learn how to mount host directories in a container

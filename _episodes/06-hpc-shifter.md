@@ -1,7 +1,7 @@
 ---
 title: "Run containers on HPC with Shifter (and Singularity)"
 teaching: 15
-exercises: 5
+exercises: 0
 questions:
 objectives:
 - Learn how to manage and run containers on a HPC cluster with Shifter
