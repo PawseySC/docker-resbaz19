@@ -220,6 +220,8 @@ Docker has several ways to mount data into containers. Here we've only partially
 > 
 > Now, run a simple command to verify the container works, for instance `blastp -help`:
 > 
+> > ## Solution ##
+> > 
 > > ```
 > > $ docker run biocontainers/blast:v2.2.31_cv2 blastp -help
 > > ```
