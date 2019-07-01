@@ -194,11 +194,9 @@ Docker has several ways to mount data into containers. Here we've only partially
 {: .challenge}
 
 
-### Running BLAST from a container with Docker ###
-
-We'll be running a BLAST (Basic Local Alignment Search Tool) example with a container from [BioContainers](https://biocontainers.pro).  BLAST is a tool bioinformaticians use to compare a sample genetic sequence to a database of known seqeuences; it's one of the most widely used bioinformatics tools.
-
-> ## Pull the BLAST container ##
+> ## Running BLAST from a container with Docker ##
+> 
+> We'll be running a BLAST (Basic Local Alignment Search Tool) example with a container from [BioContainers](https://biocontainers.pro).  BLAST is a tool bioinformaticians use to compare a sample genetic sequence to a database of known seqeuences; it's one of the most widely used bioinformatics tools.
 > 
 > To begin, try and pull the BLAST container `biocontainers/blast:v2.2.31_cv2` (this will take a little bit):
 > 
@@ -220,7 +218,7 @@ We'll be running a BLAST (Basic Local Alignment Search Tool) example with a cont
 > > {: .output}
 > {: .solution}
 > 
-> We can run a simple command to verify the container works:
+> Now, run a simple command to verify the container works, for instance `blastp -help`:
 > 
 > > ```
 > > $ docker run biocontainers/blast:v2.2.31_cv2 blastp -help
@@ -236,62 +234,62 @@ We'll be running a BLAST (Basic Local Alignment Search Tool) example with a cont
 > > ```
 > > {: .output}
 > {: .solution}
+> 
+> Let's download some data to start blasting:
+> 
+> ```
+> $ mkdir blast_example
+> $ cd blast_example
+> $ wget http://www.uniprot.org/uniprot/P04156.fasta
+> ```
+> {: .bash}
+> 
+> This is a human prion FASTA sequence.  We'll also need a reference database to blast against:
+> 
+> ```
+> $ curl -O ftp://ftp.ncbi.nih.gov/refseq/D_rerio/mRNA_Prot/zebrafish.1.protein.faa.gz
+> $ gunzip zebrafish.1.protein.faa.gz
+> ```
+> {: .bash}
+> 
+> We need to prepare the zebrafish database with `makeblastdb` for the search, so we'll run the following (see a previous episode for details on `-v`):
+> 
+> ```
+> $ docker run -v `pwd`:/data/ biocontainers/blast:v2.2.31_cv2 makeblastdb -in zebrafish.1.protein.faa -dbtype prot
+> ```
+> {: .bash}
+> 
+> After the container has terminated, you should see several new files in the current directory.  We can now do the final alignment step using `blastp`:
+> 
+> ```
+> $ docker run -v `pwd`:/data/ biocontainers/blast:v2.2.31_cv2 blastp -query P04156.fasta -db zebrafish.1.protein.faa -out results.txt
+> ```
+> {: .bash}
+> 
+> The final results are stored in `results.txt`;
+> 
+> ```
+> $ less results.txt
+> ```
+> {: .bash}
+> 
+> ```
+>                                                                       Score     E
+> Sequences producing significant alignments:                          (Bits)  Value
+> 
+>   XP_017207509.1 protein piccolo isoform X2 [Danio rerio]             43.9    2e-04
+>   XP_017207511.1 mucin-16 isoform X4 [Danio rerio]                    43.9    2e-04
+>   XP_021323434.1 protein piccolo isoform X5 [Danio rerio]             43.5    3e-04
+>   XP_017207510.1 protein piccolo isoform X3 [Danio rerio]             43.5    3e-04
+>   XP_021323433.1 protein piccolo isoform X1 [Danio rerio]             43.5    3e-04
+>   XP_009291733.1 protein piccolo isoform X1 [Danio rerio]             43.5    3e-04
+>   NP_001268391.1 chromodomain-helicase-DNA-binding protein 2 [Dan...  35.8    0.072
+> [..]
+> ```
+> {: .output}
+> 
+> We can see that several proteins in the zebrafish genome match those in the human prion (interesting?).
 {: .challenge}
-
-Let's download some data to start blasting:
-
-```
-$ mkdir blast_example
-$ cd blast_example
-$ wget http://www.uniprot.org/uniprot/P04156.fasta
-```
-{: .bash}
-
-This is a human prion FASTA sequence.  We'll also need a reference database to blast against:
-
-```
-$ curl -O ftp://ftp.ncbi.nih.gov/refseq/D_rerio/mRNA_Prot/zebrafish.1.protein.faa.gz
-$ gunzip zebrafish.1.protein.faa.gz
-```
-{: .bash}
-
-We need to prepare the zebrafish database with `makeblastdb` for the search, so we'll run the following (see a previous episode for details on `-v`):
-
-```
-$ docker run -v `pwd`:/data/ biocontainers/blast:v2.2.31_cv2 makeblastdb -in zebrafish.1.protein.faa -dbtype prot
-```
-{: .bash}
-
-After the container has terminated, you should see several new files in the current directory.  We can now do the final alignment step using `blastp`:
-
-```
-$ docker run -v `pwd`:/data/ biocontainers/blast:v2.2.31_cv2 blastp -query P04156.fasta -db zebrafish.1.protein.faa -out results.txt
-```
-{: .bash}
-
-The final results are stored in `results.txt`;
-
-```
-$ less results.txt
-```
-{: .bash}
-
-```
-                                                                      Score     E
-Sequences producing significant alignments:                          (Bits)  Value
-
-  XP_017207509.1 protein piccolo isoform X2 [Danio rerio]             43.9    2e-04
-  XP_017207511.1 mucin-16 isoform X4 [Danio rerio]                    43.9    2e-04
-  XP_021323434.1 protein piccolo isoform X5 [Danio rerio]             43.5    3e-04
-  XP_017207510.1 protein piccolo isoform X3 [Danio rerio]             43.5    3e-04
-  XP_021323433.1 protein piccolo isoform X1 [Danio rerio]             43.5    3e-04
-  XP_009291733.1 protein piccolo isoform X1 [Danio rerio]             43.5    3e-04
-  NP_001268391.1 chromodomain-helicase-DNA-binding protein 2 [Dan...  35.8    0.072
-[..]
-```
-{: .output}
-
-We can see that several proteins in the zebrafish genome match those in the human prion (interesting?).
 
 
 ### Useful container registries ###
