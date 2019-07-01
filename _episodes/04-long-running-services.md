@@ -213,6 +213,18 @@ nginx
 ```
 {: .output}
 
+and then let's remove it to avoid container name clashes in the future:
+
+```
+$ docker rm nginx
+```
+{: .bash}
+
+```
+nginx
+```
+{: .output}
+
 
 > ## Start a Jupyter web server using a container ##
 > 
@@ -243,6 +255,7 @@ nginx
 > 
 > * assign the name `jupyter` to the container
 > * map the current host working directory as `/home/jovyan/data` (see previous episode)
+> * use the `--rm` flag from a previous episode, so that the container gets deleted upon exit
 > 
 > Some hints:
 > 
@@ -253,7 +266,7 @@ nginx
 > > ## Solution ##
 > > 
 > > ```
-> > $ docker run -d -p 80:8888 --name=jupyter -v `pwd`:/home/jovyan/data jupyter/scipy-notebook
+> > $ docker run -d --name=jupyter -v `pwd`:/home/jovyan/data --rm -p 80:8888 jupyter/scipy-notebook
 > > ```
 > > {: .bash}
 > > 
@@ -266,7 +279,6 @@ nginx
 > Use `docker logs` to look for an access `token` string.
 > 
 > > ## Solution ##
-> > 
 > > 
 > > ```
 > > $ docker logs jupyter
