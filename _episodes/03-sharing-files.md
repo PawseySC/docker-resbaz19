@@ -200,37 +200,39 @@ We'll be running a BLAST (Basic Local Alignment Search Tool) example with a cont
 
 To begin, try and pull the BLAST container `biocontainers/blast:v2.2.31_cv2` (this will take a little bit):
 
-> ```
-> $ docker pull biocontainers/blast:v2.2.31_cv2
-> ```
-> {: .bash}
+> > ```
+> > $ docker pull biocontainers/blast:v2.2.31_cv2
+> > ```
+> > {: .bash}
+> > 
+> > ```
+> > v2.2.31_cv2: Pulling from biocontainers/blast
+> > 22dc81ace0ea: Pull complete 
+> > 1a8b3c87dba3: Pull complete 
+> > [..]
+> > Digest: sha256:238717ec69830ec62a19fc05c6f70183f218a13f7678864060f0157dc63dc54f
+> > Status: Downloaded newer image for biocontainers/blast:v2.2.31_cv2
+> > ```
+> > {: .output}
+> {: .solution}
 > 
-> ```
-> v2.2.31_cv2: Pulling from biocontainers/blast
-> 22dc81ace0ea: Pull complete 
-> 1a8b3c87dba3: Pull complete 
-> [..]
-> Digest: sha256:238717ec69830ec62a19fc05c6f70183f218a13f7678864060f0157dc63dc54f
-> Status: Downloaded newer image for biocontainers/blast:v2.2.31_cv2
-> ```
-> {: .output}
-{: .solution}
-
-We can run a simple command to verify the container works:
-
-```
-$ docker run biocontainers/blast:v2.2.31_cv2 blastp -help
-```
-{: .bash}
-
-```
-USAGE
-  blastp [-h] [-help] [-import_search_strategy filename]
-[..]
- -use_sw_tback
-   Compute locally optimal Smith-Waterman alignments?
-```
-{: .output}
+> We can run a simple command to verify the container works:
+> 
+> > ```
+> > $ docker run biocontainers/blast:v2.2.31_cv2 blastp -help
+> > ```
+> > {: .bash}
+> > 
+> > ```
+> > USAGE
+> >   blastp [-h] [-help] [-import_search_strategy filename]
+> > [..]
+> >  -use_sw_tback
+> >    Compute locally optimal Smith-Waterman alignments?
+> > ```
+> > {: .output}
+> {: .solution}
+{: .challenge}
 
 Let's download some data to start blasting:
 
