@@ -243,6 +243,7 @@ Serving UI at http://20aa3af2bc1d:3600?auth=ORqTR6Zd7Df-amLz2ExKd3hotS6dPwO919bQ
 Running preflight checks (please wait)...
 ```
 {: .output}
+
 That website is using a hostname internal to the container; we need to open up `http://localhost` but use the same port and auth key: 
 
 ```
