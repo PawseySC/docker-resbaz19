@@ -59,7 +59,6 @@ Once the Dockerfile is ready, let us build the image with `docker build` (we'll 
 ```
 $ docker build -t supernova .
 ```
-
 {: .bash}
 
 ```
@@ -181,7 +180,7 @@ WORKDIR /
 ```
 {: .source}
 
-After installing software via `apt-get` we set our working directory to `/opt` inside the image.  This is equivalent to running `mkdir /opt; cd /opt`, but we don't need to use a `RUN` directive.  It also means all subsusquent
+After installing software via `apt-get` we use the `WORKDIR` instruction to set our working directory to `/opt` inside the image.  This is equivalent to running `mkdir /opt; cd /opt`, but we don't need to use a `RUN` directive.  It also means all subsusquent
 Docker commands command will execute in `/opt` unless we specify otherwise.
 
 The `RUN wget -O supernova-2.1.1.tar.gz` section downloads the Supernova code from 10x, untars it, and then removes the archived file.  10x requires us to register to download the software, and then generates the long authentication you see in the
@@ -194,7 +193,7 @@ Finally, we set the final working directory to `/`.
 We can now build and tag this image (this will take a few minutes):
 
 ```
-docker build -t supernova:2.1.1 .
+$ docker build -t supernova:2.1.1 .
 ```
 {: .bash}
 
@@ -219,7 +218,7 @@ Successfully tagged supernova:2.1.1
 We'll run a small, built-in test example and access it via a web browser:
 
 ```
-docker run -d -p 80:3600 --name=supernova supernova:2.1.1 supernova testrun --id=tiny --localcores=4 --uiport=3600
+$ docker run -d -p 80:3600 --name=supernova supernova:2.1.1 supernova testrun --id=tiny --localcores=4 --uiport=3600
 ```
 {: .bash}
 
@@ -229,8 +228,11 @@ Supernova also lets us specify compute resources to use (`--localcores=4`) and w
 Once that starts we can query the running container to find out how to access the web UI:
 
 ```
-docker logs supernova
+$ docker logs supernova
+```
+{: .bash}
 
+```
 supernova testrun (2.1.1)
 Copyright (c) 2018 10x Genomics, Inc.  All rights reserved.
 -------------------------------------------------------------------------------
@@ -258,14 +260,14 @@ Note that your auth key will be different from the above one.  You should then s
 This will take a while to run, and we need to use the port for other examples.  To stop your Supernova container:
 
 ```
-docker stop supernova
-docker rm supernova
+$ docker stop supernova
+$ docker rm supernova
 ```
 {: .bash}
 
-### Base images for ###
+### Base images for Python ###
 
-It's often not necessary to build an entire application from bare bones.  There are numerous 
+It's often not necessary to build an entire application from bare bones, as there are numerous general purpose images that can be used as starting point.
 
 [continuumio/miniconda2](https://hub.docker.com/r/continuumio/miniconda2/tags) and [continuumio/miniconda3](https://hub.docker.com/r/continuumio/miniconda3/tags) are Docker images provided by the maintainers of the [Anaconda](https://anaconda.org) project. They ship with Python 2 and 3, respectively, as well as `pip` and `conda` to install and manage packages. At the time of writing, the most recent version is `4.5.12`, which is based on Python `2.7.15` and `3.7.1`, respectively.
 
