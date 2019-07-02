@@ -2,10 +2,13 @@
 *~
 .DS_Store
 .ipynb_checkpoints
+.cache
+.config
+.ipython
+.local
 .sass-cache
 __pycache__
 _site
 demos/*/Rplots.pdf
-demos/*/*.png
 demos/*/.rstudio
 demos/06_rstudio_bio/data/matrix.mtx

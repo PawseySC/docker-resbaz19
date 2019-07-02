@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:latest
+FROM rocker/tidyverse:3.5
 
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
       autoconf \
