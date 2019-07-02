@@ -77,7 +77,6 @@ Removing intermediate container 50bf59fd7477
 Successfully built ff79d520ab57
 Successfully tagged supernova:latest
 ```
-
 {: .output}
 
 In the command above, `.` indicates to Docker that everything it needs to build the image is located in the current directory (this is known as  the **build context**).  Docker will assume there is a file named `Dockerfile`, 
@@ -121,7 +120,6 @@ If you have a (free) Docker Hub account you must first login to Docker.
 ```
 $ docker login
 ```
-
 {: .bash}
 
 
@@ -132,7 +130,6 @@ First, let us create a second tag for the image, that includes your Docker Accou
 ```
 $ docker tag supernova:1.0 <your-dockerhub-account>/supernova:1.0
 ```
-
 {: .bash}
 
 Now we can push the image:
@@ -140,7 +137,6 @@ Now we can push the image:
 ```
 $ docker push <your-dockerhub-account>/supernova:1.0
 ```
-
 {: .bash}
 
 ```
@@ -150,7 +146,6 @@ cf5522ba3624: Pushed
 [..]
 1.0: digest: sha256:bcb0e09927291c7a36a37ee686aa870939ab6c2cee2ef06ae4e742dba4bb1dd4 size: 1569
 ```
-
 {: .output}
 
 Congratulations! Your image is now publicly available for anyone to pull.
@@ -184,6 +179,7 @@ ENV PATH="/opt/supernova-2.1.1:${PATH}"
 
 WORKDIR /
 ```
+{: .source}
 
 After installing software via `apt-get` we set our working directory to `/opt` inside the image.  This is equivalent to running `mkdir /opt; cd /opt`, but we don't need to use a `RUN` directive.  It also means all subsusquent
 Docker commands command will execute in `/opt` unless we specify otherwise.
@@ -200,6 +196,7 @@ We can now build and tag this image (this will take a few minutes):
 ```
 docker build -t supernova:2.1.1 .
 ```
+{: .bash}
 
 ```
 Sending build context to Docker daemon  3.584kB
@@ -215,6 +212,7 @@ Removing intermediate container 2515194a953b
 Successfully built e3b912a7329a
 Successfully tagged supernova:2.1.1
 ```
+{: .output}
 
 ### Running Supernova ###
 
@@ -223,6 +221,7 @@ We'll run a small, built-in test example and access it via a web browser:
 ```
 docker run -d -p 80:3600 --name=supernova supernova:2.1.1 supernova testrun --id=tiny --localcores=4 --uiport=3600
 ```
+{: .bash}
 
 Recall the Docker options `-d` (run in the background) and `-p 80:3600` (mapping ports between the host & the container).  Supernova has a built-in `testrun` function, and we pass the name of the dataset we want to use, `--id=tiny`.
 Supernova also lets us specify compute resources to use (`--localcores=4`) and what port the web UI should be served on (`--uiport=3600`, this needs to match what we specify in the Docker port mapping option).
@@ -230,7 +229,8 @@ Supernova also lets us specify compute resources to use (`--localcores=4`) and w
 Once that starts we can query the running container to find out how to access the web UI:
 
 ```
-skj002@turing ~/r/supernova ❯❯❯ docker logs supernova
+docker logs supernova
+
 supernova testrun (2.1.1)
 Copyright (c) 2018 10x Genomics, Inc.  All rights reserved.
 -------------------------------------------------------------------------------
@@ -242,12 +242,13 @@ Serving UI at http://20aa3af2bc1d:3600?auth=ORqTR6Zd7Df-amLz2ExKd3hotS6dPwO919bQ
 
 Running preflight checks (please wait)...
 ```
-
+{: .output}
 That website is using a hostname internal to the container; we need to open up `http://localhost` but use the same port and auth key: 
 
 ```
 http://localhost:3600?auth=ORqTR6Zd7Df-amLz2ExKd3hotS6dPwO919bQkr7jWQs
 ```
+{: .output}
 
 Note that your auth key will be different from the above one.  You should then see an overview of the pipeline like this:
 
@@ -258,8 +259,8 @@ This will take a while to run, and we need to use the port for other examples.  
 ```
 docker stop supernova
 docker rm supernova
-``
-`
+```
+{: .bash}
 
 ### Base images for ###
 
