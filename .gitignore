@@ -9,6 +9,7 @@
 .sass-cache
 __pycache__
 _site
-demos/*/Rplots.pdf
-demos/*/.rstudio
-demos/06_rstudio_bio/data/matrix.mtx
+demos/06*/Rplots.pdf
+demos/06*/*.png
+demos/06*/.rstudio
+demos/06*/data/matrix.mtx
