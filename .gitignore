@@ -9,6 +9,9 @@
 .sass-cache
 __pycache__
 _site
-demos/*/Rplots.pdf
+demos/06*/Rplots.pdf
 demos/06*/*.png
-demos/*/.rstudio
+demos/06*/.rstudio
+demos/06*/data/matrix.mtx
+demos/03*/zebrafish.1.protein.faa
+demos/10*/zebrafish.1.protein.faa

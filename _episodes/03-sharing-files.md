@@ -193,19 +193,12 @@ Docker has several ways to mount data into containers. Here we've only partially
 > > {: .output}
 > {: .solution}
 > 
-> Let's download some data to start blasting:
+> The `03_blast` demo directory contains a human prion FASTA sequence, `P04156.fasta`, 
+> and a gzipped reference database to blast against, `zebrafish.1.protein.faa.gz`. 
+> Let us `cd` to it, and uncompress the database:
 > 
 > ```
-> $ mkdir blast_example
-> $ cd blast_example
-> $ wget http://www.uniprot.org/uniprot/P04156.fasta
-> ```
-> {: .bash}
-> 
-> This is a human prion FASTA sequence.  We'll also need a reference database to blast against:
-> 
-> ```
-> $ curl -O ftp://ftp.ncbi.nih.gov/refseq/D_rerio/mRNA_Prot/zebrafish.1.protein.faa.gz
+> $ cd <top-level>/demos/03_blast
 > $ gunzip zebrafish.1.protein.faa.gz
 > ```
 > {: .bash}

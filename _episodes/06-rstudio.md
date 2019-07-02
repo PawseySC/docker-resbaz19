@@ -98,10 +98,11 @@ $ docker stop rstudio
 
 The above example only provides a bare-bones RStudio image, but now we want to actually use some R packages.  The following example is based on a bioinformatics workshop at [OzSingleCell2018](https://github.com/IMB-Computational-Genomics-Lab/SingleCells2018Workshop).  We'll use their data for our Docker/Rstudio example.
 
-To begin, let's `cd` to the `06_rstudio_bio` demo directory, where a trimmed down repo with their data has been created for this tutorial:
+To begin, let's `cd` to the `06_rstudio_bio` demo directory, where a trimmed down repo with their data has been created for this tutorial, and then uncompress a required input file:
 
 ```
 $ cd <top-level>/demos/06_rstudio_bio
+$ gunzip data/matrix.mtx.gz
 ```
 {: .bash}
 

@@ -175,7 +175,14 @@ Shifter does not allow to build container images. The best way to create an imag
 
 Shifter is compatible with **SLURM**, the job scheduler installed on Pawsey HPC systems. In particular, SLURM job executor `srun` is compatible with `shifter run`, and the two syntaxes can be combined together.
 
-As an example, the following script uses a Ubuntu container to output the machine hostname:
+As an example, let us `cd` in the `10_shifter` demo directory:
+
+```
+$ cd <top-level>/demos/10_shifter
+```
+{: .bash}
+
+and have a look at the script `hostname.sh`, that uses a Ubuntu container to output the machine hostname:
 
 ```
 #!/bin/bash -l
@@ -193,9 +200,8 @@ srun --export=all shifter run ubuntu hostname
 ```
 {: .bash}
 
-Now use your favourite text editor to copy paste the script above in a file called `hostname.sh` somewhere under `$MYSCRATCH` or `$MYGROUP` (remember to specify your Pawsey Project ID in the script!),
-
-and then submit this script using SLURM. If you are running this during a live workshop, use the flag `--reservation <your-pawsey-reservation>` to use the compute nodes that have been reserved for the event:
+Now use your favourite text editor to specify your Pawsey Project ID in the script, 
+and then submit it using SLURM. If you are running this during a live workshop, use the flag `--reservation <your-pawsey-reservation>` to use the compute nodes that have been reserved for the event:
 
 ```
 $ sbatch --reservation <your-pawsey-reservation> hostname.sh
@@ -215,7 +221,15 @@ $ sg $PAWSEY_PROJECT -c 'shifter pull biocontainers/blast:v2.2.31_cv2'
 ```
 {: .bash}
 
-The following script permits to execute the entire bioinformatics example using Shifter and the SLURM scheduler:
+Then, in the `10_shifter` demo directory uncompress the database file:
+
+```
+$ cd <top-level>/demos/10_shifter
+$ gunzip zebrafish.1.protein.faa.gz
+```
+{: .bash}
+
+The script `blast.sh` in this directory permits to execute the entire bioinformatics example using Shifter and the SLURM scheduler:
 
 ```
 #!/bin/bash -l
@@ -229,11 +243,6 @@ The following script permits to execute the entire bioinformatics example using 
 
 module load shifter
 
-# download sample inputs
-wget http://www.uniprot.org/uniprot/P04156.fasta
-curl -O ftp://ftp.ncbi.nih.gov/refseq/D_rerio/mRNA_Prot/zebrafish.1.protein.faa.gz
-gunzip zebrafish.1.protein.faa.gz
-
 # prepare database
 srun --export=all shifter run biocontainers/blast:v2.2.31_cv2 makeblastdb -in zebrafish.1.protein.faa -dbtype prot
 
@@ -242,18 +251,7 @@ srun --export=all shifter run biocontainers/blast:v2.2.31_cv2 blastp -query P041
 ```
 {: .bash}
 
-Now you can create a test directory somewhere under `$MYSCRATCH` or `$MYGROUP`, e.g.
-
-```
-$ cd $MYSCRATCH
-$ mkdir blast_example
-$ cd blast_example
-```
-{: .bash}
-
-use your favourite text editor to copy paste the script above in a file called `blast.sh` (remember to specify your Pawsey project ID in the script!),
-
-and then submit this script using SLURM:
+Now use your favourite text editor to specify your Pawsey project ID in the script, and then submit this script using SLURM:
 
 ```
 $ sbatch --reservation <your-pawsey-reservation> blast.sh
