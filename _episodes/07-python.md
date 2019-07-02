@@ -34,7 +34,7 @@ And we can run this without even building a new Docker image:
 ```
 chmod +x helloworld.py
 
-docker run --rm -v `pwd`:/app -w /app python:3.6-slim python ./helloworld.py
+docker run --rm -v $(pwd):/app -w /app python:3.6-slim python ./helloworld.py
 ```
 {: .bash}
 
@@ -92,7 +92,7 @@ An example Dockerfile is also provided.
 After you've built your image we'll start up the container and log into our Jupyter notebook server:
 
 ```
-docker run --name=jupyter-logreg -d -p 80:8888 -v `pwd`:/home/jovyan -w /home/jovyan jupyter-logreg:latest
+docker run --name=jupyter-logreg -d -p 80:8888 -v $(pwd):/home/jovyan -w /home/jovyan jupyter-logreg:latest
 ```
 {: .bash}
 
@@ -129,5 +129,75 @@ Because our Jupyter container has a functioning version of Python installed, we 
 and Python code directly from the command line:
 
 ```
-docker run --name=python-logreg -v `pwd`:/home/jovyan -w /home/jovyan jupyter-logreg:latest python ./logreg.py
+docker run --name=python-logreg -v $(pwd):/home/jovyan -w /home/jovyan jupyter-logreg:latest python ./logreg.py
 ```
+
+You should have plot now saved as a `.png` file.
+
+### Machine Learning Example ###
+
+Let's try another ML example.  We'll build another Docker image that uses Jupyter.  For this  this example, `cd` to the `demos/07_python/image-classification`.
+
+In here we have some image data (`dataset/`), a Jupyter notebook, and a Dockerfile.
+
+Just like before, we'll have you build your own Jupyter container.
+
+> Build a custom Jupyter/Python container
+> For this example you should try building your own Docker container.  Some hints:
+>
+> * Decide if you should use a base image (the [Jupyter Docker Stacks](https://jupyter-docke
+stacks.readthedocs.io/en/latest/using/selecting.html) might be a good place to start)
+> * You'll need to install 2 modules: **mahotas** annd **opencv-python**
+>
+> > ## Solution ##
+> >
+> > ```
+> > FROM jupyter/datascience-notebook:latest
+> >
+> > RUN conda install mahotas
+> > RUN pip install opencv-python
+> > ```
+> > {: .source}
+> >
+> > You can build it with
+> >
+> > ```
+> > docker build -t jupyter-image .
+> > ```
+> > {: .bash}
+> {: .solution}
+
+After you've built your image we'll start up the container and log into our Jupyter notebook
+server:
+
+```
+docker run --name=jupyter-image -d -p 80:8888 -v $(pwd):/home/jovyan -w /home/jovyan jupyter-image:latest
+```
+{: .bash}
+
+Then you'll need to use `docker logs` to find out the access key for your Jupyter server:
+
+```
+docker logs jupyter-images
+```
+{: .bash}
+
+```
+Executing the command: jupyter notebook
+[I 02:55:14.895 NotebookApp] Writing notebook server cookie secret to /home/jovyan/.local/share/jupyter/runtime/notebook_cookie_secret
+[I 02:55:16.361 NotebookApp] JupyterLab extension loaded from /opt/conda/lib/python3.7/site-packages/jupyterlab
+[I 02:55:16.361 NotebookApp] JupyterLab application directory is /opt/conda/share/jupyter/lab
+[I 02:55:16.363 NotebookApp] Serving notebooks from local directory: /home/jovyan
+[I 02:55:16.363 NotebookApp] The Jupyter Notebook is running at:
+[I 02:55:16.363 NotebookApp] http://(54bdc6f5c9cd or 127.0.0.1):8888/?token=82be2f08380f138a92ad9c6323f7fcfd124c453144492d3f
+[I 02:55:16.363 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 02:55:16.387 NotebookApp]
+
+    To access the notebook, open this file in a browser:
+        file:///home/jovyan/.local/share/jupyter/runtime/nbserver-6-open.html
+    Or copy and paste one of these URLs:
+        http://(54bdc6f5c9cd or 127.0.0.1)/?token=82be2f08380f138a92ad9c6323f7fcfd124c453144492d3f
+```
+{: .output}
+
+Point your web browser to **http://<nimbus-ip/?token=<token>** and we'll go through the notebook.
