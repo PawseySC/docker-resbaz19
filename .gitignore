@@ -10,5 +10,5 @@
 __pycache__
 _site
 demos/*/Rplots.pdf
+demos/06*/*.png
 demos/*/.rstudio
-demos/06_rstudio_bio/data/matrix.mtx
