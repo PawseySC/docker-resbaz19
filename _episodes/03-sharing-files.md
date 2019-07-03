@@ -58,24 +58,7 @@ drwxr-xr-x   1 root root 4096 Nov 12 20:56 var
 
 You are in the root `/` directory of the container, and if you compare the listing of directories with what you get in the host (type `ls -l /` for this), you will notice the two are different; even directories with the same name will have in general different timestamps, suggesting they are in fact distinct directories.
 
-Now try and create an empty file and then see who is the owner (we're feeding two commands at once to the container by separating them with a semi-colon, and running through `bash -c`):
-
-```
-$ docker run ubuntu bash -c 'touch empty-file ; ls -l empty-file'
-```
-{: .bash}
-
-```
--rw-r--r-- 1 root root 0 Dec 19 08:06 empty-file
-```
-{: .output}
-
-The file is owned by the root user!
-
-What we have just seen is a consequence of some Docker defaults:
-
-* a container hasn't got any access to directories in the host filesystem (i.e. directories in the computer where you're running the container from)
-* as by default a container is run as root, any created file is owned by the group user.
+This is the consequence of a default Docker behaviour: a container hasn't got any access to directories in the host filesystem (i.e. directories in the computer where you're running the container from)
 
 
 ### Accessing host directories ###

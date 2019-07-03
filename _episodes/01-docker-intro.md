@@ -63,7 +63,7 @@ A few examples of how containers are being used at Pawsey
 * Python apps in radio astronomy
 * Webservers
 * Cloud workflows (via Docker)
-* HPC workflows (via Shifter)
+* HPC workflows (via Shifter or Singularity)
 
 Here's an overview of what a workflow might look like:
 

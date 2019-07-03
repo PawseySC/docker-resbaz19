@@ -73,25 +73,38 @@ $ docker run -i ubuntu wc -w < words
 
 ### Matching user permissions with the host ###
 
-We have seen in a previous episode how files created by the container belong to the root user. This can be annoying, in that the host user might then have limitations in editing/deleting those files. 
+Try and create an empty file and then see who is the owner:
+
+```
+$ docker run -v `pwd`:/data -w /data ubuntu touch owner1
+$ ls -l owner1
+```
+{: .bash}
+
+```
+-rw-r--r-- 1 root   root   0 Jul  3 02:11 owner1
+```
+{: .output}
+
+So, as by default a container is run as root, any created file belongs to the root user! This can be annoying, in that the host user might then have limitations in editing/deleting those files.
+
 Docker has an option, `-u` or `--user`, to alter the user and group ID in the running container. It can be used in conjunction with the linux command `id` to pass the host user and group IDs directly to the container. For instance:
 
 ```
-$ docker run -v `pwd`:/data -w /data -u `id -u`:`id -g` ubuntu touch container3
+$ docker run -v `pwd`:/data -w /data -u `id -u`:`id -g` ubuntu touch owner2 
 ```
 {: .bash}
 
 Now, let us inspect the ownerships of all the files created so far through containers:
 
 ```
-$ ls -l container?
+$ ls -l owner?
 ```
 {: .bash}
 
 ```
--rw-r--r-- 1 root   root   0 Dec 19 08:16 container1
--rw-r--r-- 1 root   root   0 Dec 19 08:19 container2
--rw-r--r-- 1 ubuntu ubuntu 0 Dec 19 08:38 container3
+-rw-r--r-- 1 root   root   0 Jul  3 02:11 owner1
+-rw-r--r-- 1 ubuntu ubuntu 0 Jul  3 02:11 owner2
 ```
 {: .output}
 

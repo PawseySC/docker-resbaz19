@@ -147,6 +147,51 @@ Error response from daemon: conflict: unable to remove repository reference "ngi
 {: .error}
 
 
+### Self-cleaning when running a container ###
+
+It's possible to run a Docker container with an additional flag, `--rm`, so that the container is automatically removed from the local cache once execution terminates. This way no later cache clean up is required.
+
+Let's see it with an example. We'll clean up the cache first,
+
+```
+$ docker rm `docker ps --all -q`
+```
+{: .bash}
+
+Then we'll check the cache is empty:
+
+```
+$ docker ps -a
+```
+{: .bash}
+
+```
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+```
+{: .output}
+
+Now let's run a container with the `--rm` flag:
+
+```
+$ docker run --rm ubuntu echo "hello world"
+```
+{: .bash}
+
+And finally we'll check that the cache is still empty, as a consequence of having used the `--rm` flag:
+
+```
+$ docker ps -a
+```
+{: .bash}
+
+```
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+```
+{: .output}
+
+Note that while the `--rm` flag cleans the exited container from cache, it preserves the image locally, so that further runs are allowed, until `docker rmi` is used.
+
+
 ### Dangling & Unused Images ###
 
 After building and pulling images you may eventually find that your list of images includes with the name `<none>:<none>`:
