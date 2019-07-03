@@ -11,7 +11,7 @@ keypoints:
 - "Change working directory at container runtime with the flag `-w <working dir>`"
 ---
 
-### Directory and file defaults in Docker ###
+### Default directory access in Docker ###
 
 Try and run the following to get to know what is the starting point in the Ubuntu container and what it contains. First: 
 
